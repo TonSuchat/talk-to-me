@@ -7,7 +7,7 @@ module.exports = {
   target: "web",
   mode: "development",
   output: {
-    path: path.resolve(__dirname, "build"),
+    path: path.resolve(__dirname, "dist"),
     filename: "bundle.js",
   },
   resolve: {
@@ -18,15 +18,18 @@ module.exports = {
       {
         test: /\.tsx?$/,
         loader: "awesome-typescript-loader",
+        exclude: /node_modules/,
       },
       {
         enforce: "pre",
         test: /\.js$/,
         loader: "source-map-loader",
+        exclude: /node_modules/,
       },
       {
         test: /\.css$/,
         loader: "css-loader",
+        exclude: /node_modules/,
       },
     ],
   },
