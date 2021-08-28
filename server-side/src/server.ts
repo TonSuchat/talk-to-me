@@ -1,15 +1,29 @@
 import * as express from "express";
-import { Request, Response } from "express";
+import { createServer } from "http";
+import { Server, Socket } from "socket.io";
+import indexRoute from "./routes";
 
-const app = express();
 const port = process.env.PORT || 8081;
+const app = express();
+app.use(indexRoute);
 
-app.get("/", (_req: Request, res: Response) => {
-  res.send({
-    message: "Hi Ton",
+const httpServer = createServer(app);
+const io = new Server(httpServer, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"],
+  },
+});
+
+io.on("connection", (socket: Socket) => {
+  console.log("a user connected");
+
+  socket.on("sendMessage", (arg) => {
+    console.log(arg);
+    socket.emit("sendMessage", arg);
   });
 });
 
-app.listen(port, () => {
-  console.log("server listening on port 8081");
+httpServer.listen(port, () => {
+  console.log(`Server is running on port: ${port}`);
 });
