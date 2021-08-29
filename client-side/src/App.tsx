@@ -1,18 +1,20 @@
-import { useState } from "react";
-import { io } from "socket.io-client";
+import { useState, useContext, useEffect } from "react";
+import SocketContext, { SocketContextType } from "./contexts/socketContext";
+import withSocket from "./utils/withSocket";
 
 const App = () => {
-  const serverUrl = "http://localhost:8081";
-  const socket = io(serverUrl);
+  const { socket } = useContext<SocketContextType>(SocketContext);
   const [msg, setMsg] = useState<string>("");
+
+  useEffect(() => {
+    socket.on("sendMessage", (arg) => {
+      console.log(arg);
+    });
+  }, [socket]);
 
   const onSendClicked = () => {
     socket.emit("sendMessage", msg);
   };
-
-  socket.on("sendMessage", (arg) => {
-    console.log(arg);
-  });
 
   return (
     <div>
@@ -22,4 +24,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default withSocket(App);
